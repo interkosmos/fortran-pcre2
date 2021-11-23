@@ -1,0 +1,19 @@
+name = "fortran-pcre2"
+version = "0.1.0"
+license = "ISC"
+author = "Philipp Engel"
+maintainer = "@interkosmos"
+copyright = "Copyright (c) 2021, Philipp Engel"
+description = "Fortran 2018 ISO C binding interfaces to PCRE2"
+keywords = [ "pcre2", "pcre", "regexp" ]
+
+[build]
+link = "pcre2-8"
+
+[library]
+source-dir = "src"
+
+[[test]]
+name = "test_pcre2"
+source-dir = "test"
+main = "test_pcre2.f90"
