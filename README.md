@@ -1,6 +1,6 @@
 # fortran-pcre2
 A work-in-progress collection of Fortran 2018 ISO_C_BINDING interfaces to
-PCRE2.
+[PCRE2](https://www.pcre.org/current/doc/html/).
 
 ## Build Instructions
 You will need *libpcre2* with development headers. On FreeBSD, run:
@@ -33,34 +33,54 @@ The following program just compiles and executes a basic regular expression.
 ```fortran
 program main
     use, intrinsic :: iso_c_binding
-    use :: pcre
+    use :: pcre2
     implicit none (type, external)
-    character(len=:), allocatable :: err
-    integer                       :: err_offset, rc
-    integer                       :: ovector(30)
-    type(c_ptr)                   :: re
+    integer, parameter            :: OVECSIZE = 30
+    character(len=128)            :: buffer
+    character(len=:), allocatable :: pattern, subject
+    integer                       :: err_code, rc
+    integer(kind=PCRE2_SIZE)      :: err_offset
+    type(c_ptr)                   :: match_data, re
 
-    re = pcre_compile('^([A-Z][a-z]+)$', 0, err, err_offset, c_null_ptr)
+    pattern = '^([A-Z][a-z]+)$'
+    subject = 'Fortran'
+
+    ! Compile regular expression.
+    re = pcre2_compile(pattern, len(pattern, kind=8), 0, err_code, err_offset, c_null_ptr)
 
     if (.not. c_associated(re)) then
-        print '("PCRE compilation failed at offset ",i0,": ",a)', err_offset, err
-        stop
+        buffer = ' '
+        rc = pcre2_get_error_message(err_code, buffer, len(buffer, kind=PCRE2_SIZE))
+        print '("Error ", i0, ": ", a)', err_code, trim(buffer)
+        return
     end if
 
-    rc = pcre_exec(re, c_null_ptr, 'Fortran', 7, 0, 0, ovector, size(ovector))
+    ! Execute regular expression.
+    match_data = pcre2_match_data_create(OVECSIZE, c_null_ptr)
 
-    if (rc < 0) then
+    rc = pcre2_match(code        = re, &
+                     subject     = subject, &
+                     length      = len(subject, kind=PCRE2_SIZE), &
+                     startoffset = int(0, kind=PCRE2_SIZE), &
+                     options     = 0, &
+                     match_data  = match_data, &
+                     mcontext    = c_null_ptr)
+
+    if (rc == 0) then
+        print '("OVECSIZE too small")'
+    else if (rc < 0) then
         select case (rc)
-            case (PCRE_ERROR_NOMATCH)
+            case (PCRE2_ERROR_NOMATCH)
                 print '("No match")'
             case default
                 print '("Matching error ", i0)', rc
         end select
-    else
-        print '("Match succeeded at offset ", i0)', ovector(1)
+    else if (rc > 0) then
+        print '("Match!")'
     end if
 
-    call pcre_free(re)
+    call pcre2_match_data_free(match_data)
+    call pcre2_code_free(re)
 end program main
 ```
 
