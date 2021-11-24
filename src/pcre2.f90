@@ -309,6 +309,7 @@ module pcre2
     public :: pcre2_match_data_free
     public :: pcre2_substring_copy_byname
     public :: pcre2_substring_copy_bynumber
+    public :: pcre2_substring_free
     public :: pcre2_substring_get_byname
     public :: pcre2_substring_get_bynumber
     public :: pcre2_substring_number_from_name
@@ -462,6 +463,7 @@ module pcre2
         ! void pcre2_substring_free(PCRE2_UCHAR *buffer)
         subroutine pcre2_substring_free(buffer) bind(c, name='pcre2_substring_free_8')
             import :: c_ptr
+            implicit none
             type(c_ptr), intent(in), value :: buffer
         end subroutine pcre2_substring_free
     end interface
@@ -470,6 +472,7 @@ module pcre2
         ! size_t strlen(const char *str)
         function c_strlen(str) bind(c, name='strlen')
             import :: c_ptr, c_size_t
+            implicit none
             type(c_ptr), intent(in), value :: str
             integer(kind=c_size_t)         :: c_strlen
         end function c_strlen
@@ -496,7 +499,7 @@ contains
         if (present(buff_len)) then
             sz = buff_len
         else
-            sz = len(buffer)
+            sz = len(buffer, kind=PCRE2_SIZE)
         end if
 
         rc = pcre2_substring_copy_byname_(match_data, name // c_null_char, buffer, sz)
@@ -514,7 +517,7 @@ contains
         if (present(buff_len)) then
             sz = buff_len
         else
-            sz = len(buffer)
+            sz = len(buffer, kind=PCRE2_SIZE)
         end if
 
         rc = pcre2_substring_copy_bynumber_(match_data, number, buffer, sz)

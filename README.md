@@ -1,6 +1,7 @@
 # fortran-pcre2
 A work-in-progress collection of Fortran 2018 ISO_C_BINDING interfaces to
-[PCRE2](https://www.pcre.org/current/doc/html/).
+Perl-compatible Regular Expressions 2
+([PCRE2](https://www.pcre.org/current/doc/html/)).
 
 ## Build Instructions
 You will need *libpcre2* with development headers. On FreeBSD, run:
@@ -31,6 +32,7 @@ Link your Fortran programs against `libfortran-pcre2.a` and `-lpcre2-8`.
 The following program just compiles and executes a basic regular expression.
 
 ```fortran
+! example.f90
 program main
     use, intrinsic :: iso_c_binding
     use :: pcre2
@@ -46,7 +48,7 @@ program main
     subject = 'Fortran'
 
     ! Compile regular expression.
-    re = pcre2_compile(pattern, len(pattern, kind=8), 0, err_code, err_offset, c_null_ptr)
+    re = pcre2_compile(pattern, len(pattern, kind=PCRE2_SIZE), 0, err_code, err_offset, c_null_ptr)
 
     if (.not. c_associated(re)) then
         buffer = ' '
@@ -121,6 +123,7 @@ functions.
 | `pcre2_match_data_free_8`            |  `pcre2_match_data_free`            |
 | `pcre2_substring_copy_byname_8`      |  `pcre2_substring_copy_byname`      |
 | `pcre2_substring_copy_bynumber_8`    |  `pcre2_substring_copy_bynumber`    |
+| `pcre2_substring_free_8`             |  `pcre2_substring_free`             |
 | `pcre2_substring_get_byname_8`       |  `pcre2_substring_get_byname`       |
 | `pcre2_substring_get_bynumber_8`     |  `pcre2_substring_get_bynumber`     |
 | `pcre2_substring_number_from_name_8` |  `pcre2_substring_number_from_name` |

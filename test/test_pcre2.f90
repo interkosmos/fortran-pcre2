@@ -27,7 +27,7 @@ contains
         type(c_ptr)                       :: match_data, ptr, re
 
         ! Compile regular expression.
-        re = pcre2_compile(pattern, len(pattern, kind=8), 0, err_code, err_offset, c_null_ptr)
+        re = pcre2_compile(pattern, len(pattern, kind=PCRE2_SIZE), 0, err_code, err_offset, c_null_ptr)
 
         if (.not. c_associated(re)) then
             buffer = ' '

@@ -5,7 +5,7 @@ author = "Philipp Engel"
 maintainer = "@interkosmos"
 copyright = "Copyright (c) 2021, Philipp Engel"
 description = "Fortran 2018 ISO C binding interfaces to PCRE2"
-keywords = [ "pcre2", "pcre", "regexp" ]
+keywords = [ "pcre2", "pcre", "regex", "regexp" ]
 
 [build]
 link = "pcre2-8"
