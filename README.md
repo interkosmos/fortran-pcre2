@@ -59,7 +59,7 @@ program main
         buffer = ' '
         rc = pcre2_get_error_message(err_code, buffer, len(buffer, kind=PCRE2_SIZE))
         print '("Error ", i0, ": ", a)', err_code, trim(buffer)
-        return
+        stop
     end if
 
     ! Execute regular expression.
