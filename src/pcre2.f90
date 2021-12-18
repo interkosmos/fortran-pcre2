@@ -409,7 +409,7 @@ module pcre2
 
         ! int pcre2_substring_get_byname(pcre2_match_data *match_data, PCRE2_SPTR name, PCRE2_UCHAR **bufferptr, PCRE2_SIZE *bufflen)
         function pcre2_substring_get_byname_(match_data, name, bufferptr, bufflen) bind(c, name='pcre2_substring_get_byname_8')
-            import :: c_int, c_ptr, PCRE2_SIZE, PCRE2_SPTR, PCRE2_UCHAR
+            import :: c_int, c_ptr, PCRE2_SIZE, PCRE2_SPTR
             implicit none
             type(c_ptr),                 intent(in), value :: match_data
             character(kind=PCRE2_SPTR),  intent(in)        :: name
@@ -421,7 +421,7 @@ module pcre2
         ! int pcre2_substring_get_bynumber(pcre2_match_data *match_data, uint32_t number, PCRE2_UCHAR **bufferptr, PCRE2_SIZE *bufflen)
         function pcre2_substring_get_bynumber_(match_data, number, bufferptr, bufflen) &
                 bind(c, name='pcre2_substring_get_bynumber_8')
-            import :: c_int, c_ptr, c_uint32_t, PCRE2_SIZE, PCRE2_UCHAR
+            import :: c_int, c_ptr, c_uint32_t, PCRE2_SIZE
             implicit none
             type(c_ptr),                 intent(in), value :: match_data
             integer(kind=c_uint32_t),    intent(in), value :: number
@@ -532,6 +532,7 @@ contains
         integer                                    :: rc
         type(c_ptr)                                :: ptr
 
+        ptr = c_null_ptr
         rc = pcre2_substring_get_byname_(match_data, name // c_null_char, ptr, buff_len)
 
         if (c_associated(ptr)) then
@@ -548,6 +549,7 @@ contains
         integer                                    :: rc
         type(c_ptr)                                :: ptr
 
+        ptr = c_null_ptr
         rc = pcre2_substring_get_bynumber_(match_data, number, ptr, buff_len)
 
         if (c_associated(ptr)) then
@@ -564,7 +566,7 @@ contains
 
         if (.not. c_associated(c_str)) return
         sz = c_strlen(c_str)
-        if (sz <= 0) return
+        if (sz < 0) return
         call c_f_pointer(c_str, ptrs, [ sz ])
         allocate (character(len=sz) :: f_str)
         f_str = copy(ptrs)
