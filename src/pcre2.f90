@@ -6,6 +6,7 @@
 ! Licence: ISC
 module pcre2
     use, intrinsic :: iso_c_binding
+    use, intrinsic :: iso_fortran_env, only: i8 => int64
     implicit none (type, external)
     private
 
@@ -481,7 +482,7 @@ contains
     pure function copy(a)
         character, intent(in)  :: a(:)
         character(len=size(a)) :: copy
-        integer(kind=8)        :: i
+        integer(kind=i8)       :: i
 
         do i = 1, size(a)
             copy(i:i) = a(i)
@@ -562,7 +563,7 @@ contains
         type(c_ptr),                   intent(in)  :: c_str
         character(len=:), allocatable, intent(out) :: f_str
         character(kind=c_char), pointer            :: ptrs(:)
-        integer(kind=8)                            :: sz
+        integer(kind=i8)                           :: sz
 
         if (.not. c_associated(c_str)) return
         sz = c_strlen(c_str)

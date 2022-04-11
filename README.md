@@ -10,6 +10,12 @@ You will need *libpcre2* with development headers. On FreeBSD, run:
 # pkg install devel/pcre2
 ```
 
+On Debian Linux, install:
+
+```
+# apt-get install libpcre2-8-0 libpcre2-dev
+```
+
 Clone the repository and execute the provided `Makefile` to create the static
 library `libfortran-pcre2.a` containing the interfaces:
 
