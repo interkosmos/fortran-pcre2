@@ -1,7 +1,8 @@
 # fortran-pcre2
 A work-in-progress collection of Fortran 2018 ISO_C_BINDING interfaces to
 Perl-compatible Regular Expressions 2
-([PCRE2](https://www.pcre.org/current/doc/html/)).
+([PCRE2](https://www.pcre.org/current/doc/html/)). The library is also available
+on [MacPorts](https://ports.macports.org/port/fortran-pcre2/).
 
 ## Build Instructions
 You will need *libpcre2* with development headers. On FreeBSD, run:
@@ -29,7 +30,7 @@ Instead of `make`, you may want to build the library using the Fortran Package
 Manager:
 
 ```
-$ fpm build --profile release
+$ fpm build --profile=release
 ```
 
 Link your Fortran programs against `libfortran-pcre2.a` and `-lpcre2-8`.
@@ -43,7 +44,8 @@ program main
     use, intrinsic :: iso_c_binding
     use :: pcre2
     implicit none (type, external)
-    integer, parameter            :: OVECSIZE = 30
+    integer, parameter :: OVECSIZE = 30
+
     character(len=128)            :: buffer
     character(len=:), allocatable :: pattern, subject
     integer                       :: err_code, rc
