@@ -13,6 +13,9 @@ link = "pcre2-8"
 [library]
 source-dir = "src"
 
+[install]
+library = true
+
 [[test]]
 name = "test_pcre2"
 source-dir = "test"
