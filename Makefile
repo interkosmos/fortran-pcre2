@@ -2,7 +2,8 @@
 
 FC      = gfortran
 PREFIX  = /usr/local
-FFLAGS  = -Wall -Wno-maybe-uninitialized -fmax-errors=1 -fcheck=all
+DEBUG   = #-g -O0 -Wall -fmax-errors=1 -fcheck=all
+FFLAGS  = $(DEBUG)
 LDFLAGS = -I$(PREFIX)/include/ -L$(PREFIX)/lib/
 LDLIBS  = -lpcre2-8
 ARFLAGS = rcs
