@@ -10,15 +10,15 @@ ARFLAGS = rcs
 TARGET  = libfortran-pcre2.a
 TEST    = test_pcre2
 
-.PHONY: all clean
+.PHONY: all clean test
 
-all: $(TARGET) $(TEST)
+all: $(TARGET)
 
 $(TARGET): src/pcre2.f90
 	$(FC) $(FFLAGS) -c src/pcre2.f90
 	$(AR) $(ARFLAGS) $(TARGET) pcre2.o
 
-$(TEST): test/test_pcre2.f90
+test:
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(TEST) test/test_pcre2.f90 $(TARGET) $(LDLIBS)
 
 clean:

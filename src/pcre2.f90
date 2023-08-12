@@ -317,7 +317,6 @@ module pcre2
 
     private :: c_f_str_ptr
     private :: c_strlen
-    private :: copy
     private :: pcre2_substring_copy_byname_
     private :: pcre2_substring_copy_bynumber_
     private :: pcre2_substring_get_byname_
@@ -560,16 +559,27 @@ contains
     end function pcre2_substring_get_bynumber
 
     subroutine c_f_str_ptr(c_str, f_str)
+        !! Copies a C string, passed as a C pointer, to a Fortran string.
         type(c_ptr),                   intent(in)  :: c_str
         character(len=:), allocatable, intent(out) :: f_str
-        character(kind=c_char), pointer            :: ptrs(:)
-        integer(kind=i8)                           :: sz
 
-        if (.not. c_associated(c_str)) return
-        sz = c_strlen(c_str)
-        if (sz < 0) return
-        call c_f_pointer(c_str, ptrs, [ sz ])
-        allocate (character(len=sz) :: f_str)
-        f_str = copy(ptrs)
+        character(kind=c_char), pointer :: ptrs(:)
+        integer(kind=c_size_t)          :: i, sz
+
+        copy_block: block
+            if (.not. c_associated(c_str)) exit copy_block
+            sz = c_strlen(c_str)
+            if (sz < 0) exit copy_block
+            call c_f_pointer(c_str, ptrs, [ sz ])
+            allocate (character(len=sz) :: f_str)
+
+            do i = 1, sz
+                f_str(i:i) = ptrs(i)
+            end do
+
+            return
+        end block copy_block
+
+        if (.not. allocated(f_str)) f_str = ''
     end subroutine c_f_str_ptr
 end module pcre2
