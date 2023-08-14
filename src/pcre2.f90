@@ -478,16 +478,6 @@ module pcre2
         end function c_strlen
     end interface
 contains
-    pure function copy(a)
-        character, intent(in)  :: a(:)
-        character(len=size(a)) :: copy
-        integer(kind=i8)       :: i
-
-        do i = 1, size(a)
-            copy(i:i) = a(i)
-        end do
-    end function copy
-
     function pcre2_substring_copy_byname(match_data, name, buffer, buff_len) result(rc)
         type(c_ptr),              intent(in)              :: match_data
         character(len=*),         intent(in)              :: name
