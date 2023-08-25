@@ -22,8 +22,8 @@ test:
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(TEST) test/test_pcre2.f90 $(TARGET) $(LDLIBS)
 
 clean:
-	rm $(TARGET)
-	rm $(TEST)
-	rm *.o
-	rm *.mod
+	if [ `ls -1 *.mod 2>/dev/null | wc -l` -gt 0 ]; then rm *.mod; fi
+	if [ `ls -1 *.o 2>/dev/null | wc -l` -gt 0 ]; then rm *.o; fi
+	if [ -e $(TARGET) ]; then rm $(TARGET); fi
+	if [ -e $(TEST) ]; then rm $(TEST); fi
 
