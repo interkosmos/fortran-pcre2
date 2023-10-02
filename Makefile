@@ -1,10 +1,14 @@
 .POSIX:
+.SUFFIXES:
 
 FC      = gfortran
 PREFIX  = /usr/local
-DEBUG   = #-g -O0 -Wall -fmax-errors=1 -fcheck=all
-FFLAGS  = $(DEBUG)
-LDFLAGS = -I$(PREFIX)/include/ -L$(PREFIX)/lib/
+
+DEBUG   = -g -O0 -Wall -fmax-errors=1
+RELEASE = -O2 -march=native
+
+FFLAGS  = $(RELEASE)
+LDFLAGS = -I$(PREFIX)/include -L$(PREFIX)/lib
 LDLIBS  = -lpcre2-8
 ARFLAGS = rcs
 TARGET  = libfortran-pcre2.a
