@@ -11,16 +11,27 @@ FFLAGS  = $(RELEASE)
 LDFLAGS = -I$(PREFIX)/include -L$(PREFIX)/lib
 LDLIBS  = -lpcre2-8
 ARFLAGS = rcs
+INCDIR  = $(PREFIX)/include/libfortran-pcre2
+LIBDIR  = $(PREFIX)/lib
+MODULE  = pcre2.mod
 TARGET  = libfortran-pcre2.a
 TEST    = test_pcre2
 
-.PHONY: all clean test
+.PHONY: all clean install test
 
 all: $(TARGET)
 
 $(TARGET): src/pcre2.f90
 	$(FC) $(FFLAGS) -c src/pcre2.f90
 	$(AR) $(ARFLAGS) $(TARGET) pcre2.o
+
+install: $(TARGET)
+	@echo "--- Installing $(TARGET) to $(LIBDIR)/ ..."
+	install -d $(LIBDIR)
+	install -m 644 $(TARGET) $(LIBDIR)/
+	@echo "--- Installing module files to $(INCDIR)/ ..."
+	install -d $(INCDIR)
+	install -m 644 $(MODULE) $(INCDIR)/
 
 test:
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $(TEST) test/test_pcre2.f90 $(TARGET) $(LDLIBS)

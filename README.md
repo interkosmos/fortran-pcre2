@@ -1,10 +1,12 @@
 # fortran-pcre2
+
 A work-in-progress collection of Fortran 2018 ISO_C_BINDING interfaces to
 Perl-compatible Regular Expressions 2
 ([PCRE2](https://www.pcre.org/current/doc/html/)). The library is also available
 on [MacPorts](https://ports.macports.org/port/fortran-pcre2/).
 
 ## Build Instructions
+
 You will need *libpcre2* with development headers. On FreeBSD, run:
 
 ```
@@ -26,16 +28,23 @@ $ cd fortran-pcre2/
 $ make
 ```
 
+Install the library and the modules files system-wide to `/opt`:
+
+```
+$ make install PREFIX=/opt
+```
+
 Instead of `make`, you may want to build the library using the Fortran Package
 Manager:
 
 ```
-$ fpm build --profile=release
+$ fpm build --profile release
 ```
 
 Link your Fortran programs against `libfortran-pcre2.a` and `-lpcre2-8`.
 
 ## Example
+
 The following program just compiles and executes a basic regular expression.
 
 ```fortran
@@ -99,15 +108,17 @@ program main
 end program main
 ```
 
-Compile, link, and run the program with, for example:
+If the library is installed to `/opt`, then compile, link, and run the program
+with:
 
 ```
-$ gfortran -o example example.f90 libfortran-pcre2.a -lpcre2-8
+$ gfortran -I/opt/include/libfortran-pcre2 -o example example.f90 /opt/lib/libfortran-pcre2.a -lpcre2-8
 $ ./example
 ```
 
-## fpm
-You can add *fortran-pcre2* as an [fpm](https://github.com/fortran-lang/fpm)
+## Fortran Package Manager
+
+You can add *fortran-pcre2* as an [FPM](https://github.com/fortran-lang/fpm)
 dependency:
 
 ```toml
@@ -116,6 +127,7 @@ fortran-pcre2 = { git = "https://github.com/interkosmos/fortran-pcre2.git" }
 ```
 
 ## Compatibility
+
 It is not necessary to null-terminate character strings given to the procedures
 of *fortran-pcre2*. In contrast to the C API of PCRE2, you must not free
 substrings with `pcre2_substring_free()`, as this will be done by the wrapper
@@ -142,4 +154,5 @@ functions.
 | `pcre2_substring_number_from_name_8` |  `pcre2_substring_number_from_name` |
 
 ## Licence
+
 ISC
