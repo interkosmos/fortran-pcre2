@@ -5,7 +5,7 @@ FC      = gfortran
 PREFIX  = /usr/local
 
 DEBUG   = -g -O0 -Wall -fmax-errors=1
-RELEASE = -O2 -march=native
+RELEASE = -O2
 
 FFLAGS  = $(RELEASE)
 LDFLAGS = -I$(PREFIX)/include -L$(PREFIX)/lib

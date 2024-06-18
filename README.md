@@ -108,8 +108,8 @@ program main
 end program main
 ```
 
-If the library is installed to `/opt`, then compile, link, and run the program
-with:
+If the library has been installed to `/opt`, then compile, link, and run the
+program with:
 
 ```
 $ gfortran -I/opt/include/libfortran-pcre2 -o example example.f90 /opt/lib/libfortran-pcre2.a -lpcre2-8
