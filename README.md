@@ -53,12 +53,13 @@ program main
     use, intrinsic :: iso_c_binding
     use :: pcre2
     implicit none (type, external)
-    integer, parameter :: OVECSIZE = 30
+
+    integer, parameter :: OVECSIZE = 30 ! Must be multiple of 3.
 
     character(len=128)            :: buffer
     character(len=:), allocatable :: pattern, subject
     integer                       :: err_code, rc
-    integer(kind=PCRE2_SIZE)      :: err_offset
+    integer(kind=pcre2_size)      :: err_offset
     type(c_ptr)                   :: match_data, re
 
     pattern = '^([A-Z][a-z]+)$'
@@ -66,7 +67,7 @@ program main
 
     ! Compile regular expression.
     re = pcre2_compile(pattern     = pattern, &
-                       length      = len(pattern, kind=PCRE2_SIZE), &
+                       length      = len(pattern, kind=pcre2_size), &
                        options     = 0, &
                        errorcode   = err_code, &
                        erroroffset = err_offset, &
@@ -74,7 +75,7 @@ program main
 
     if (.not. c_associated(re)) then
         buffer = ' '
-        rc = pcre2_get_error_message(err_code, buffer, len(buffer, kind=PCRE2_SIZE))
+        rc = pcre2_get_error_message(err_code, buffer, len(buffer, kind=pcre2_size))
         print '("Error ", i0, ": ", a)', err_code, trim(buffer)
         stop
     end if
@@ -84,8 +85,8 @@ program main
 
     rc = pcre2_match(code        = re, &
                      subject     = subject, &
-                     length      = len(subject, kind=PCRE2_SIZE), &
-                     startoffset = int(0, kind=PCRE2_SIZE), &
+                     length      = len(subject, kind=pcre2_size), &
+                     startoffset = int(0, kind=pcre2_size), &
                      options     = 0, &
                      match_data  = match_data, &
                      mcontext    = c_null_ptr)

@@ -21,17 +21,17 @@ contains
         character(len=:), allocatable     :: substring
         integer                           :: i, rc, rc2
         integer                           :: err_code, oveccount
-        integer(kind=PCRE2_SIZE)          :: buffer_length, err_offset
-        integer(kind=PCRE2_SIZE)          :: substring_length, substring_start
-        integer(kind=PCRE2_SIZE), pointer :: ovector(:)
+        integer(kind=pcre2_size)          :: buffer_length, err_offset
+        integer(kind=pcre2_size)          :: substring_length, substring_start
+        integer(kind=pcre2_size), pointer :: ovector(:)
         type(c_ptr)                       :: match_data, ptr, re
 
         ! Compile regular expression.
-        re = pcre2_compile(pattern, len(pattern, kind=PCRE2_SIZE), 0, err_code, err_offset, c_null_ptr)
+        re = pcre2_compile(pattern, len(pattern, kind=pcre2_size), 0, err_code, err_offset, c_null_ptr)
 
         if (.not. c_associated(re)) then
             buffer = ' '
-            rc = pcre2_get_error_message(err_code, buffer, len(buffer, kind=PCRE2_SIZE))
+            rc = pcre2_get_error_message(err_code, buffer, len(buffer, kind=pcre2_size))
             print '("Error ", i0, ": ", a)', err_code, trim(buffer)
             return
         end if
@@ -40,8 +40,8 @@ contains
         match_data = pcre2_match_data_create(OVECSIZE, c_null_ptr)
         rc = pcre2_match(code        = re, &
                          subject     = subject, &
-                         length      = len(subject, kind=PCRE2_SIZE), &
-                         startoffset = int(0, kind=PCRE2_SIZE), &
+                         length      = len(subject, kind=pcre2_size), &
+                         startoffset = int(0, kind=pcre2_size), &
                          options     = 0, &
                          match_data  = match_data, &
                          mcontext    = c_null_ptr)

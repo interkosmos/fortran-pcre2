@@ -11,12 +11,12 @@ module pcre2
     private
 
     integer,                  parameter, public :: c_uint32_t            = c_int32_t
-    integer,                  parameter, public :: PCRE2_UCHAR           = c_char
-    integer,                  parameter, public :: PCRE2_SPTR            = c_char
-    integer,                  parameter, public :: PCRE2_SIZE            = c_size_t
-    integer,                  parameter, public :: PCRE2_SIZE_MAX        = storage_size(int(0, kind=PCRE2_SIZE)) / 8
-    integer(kind=PCRE2_SIZE), parameter, public :: PCRE2_ZERO_TERMINATED = not(int(0, kind=PCRE2_SIZE))
-    integer(kind=PCRE2_SIZE), parameter, public :: PCRE2_UNSET           = not(int(0, kind=PCRE2_SIZE))
+    integer,                  parameter, public :: pcre2_uchar           = c_char
+    integer,                  parameter, public :: pcre2_sptr            = c_char
+    integer,                  parameter, public :: pcre2_size            = c_size_t
+    integer,                  parameter, public :: pcre2_size_max        = storage_size(int(0, kind=pcre2_size)) / 8
+    integer(kind=pcre2_size), parameter, public :: pcre2_zero_terminated = not(int(0, kind=pcre2_size))
+    integer(kind=pcre2_size), parameter, public :: pcre2_unset           = not(int(0, kind=pcre2_size))
 
     integer(kind=c_int), parameter, public :: PCRE2_ANCHORED     = int(z'80000000')
     integer(kind=c_int), parameter, public :: PCRE2_NO_UTF_CHECK = int(z'40000000')
@@ -309,40 +309,39 @@ module pcre2
     public :: pcre2_match_data_create
     public :: pcre2_match_data_free
     public :: pcre2_substring_copy_byname
+    public :: pcre2_substring_copy_byname_
     public :: pcre2_substring_copy_bynumber
+    public :: pcre2_substring_copy_bynumber_
     public :: pcre2_substring_free
     public :: pcre2_substring_get_byname
+    public :: pcre2_substring_get_byname_
     public :: pcre2_substring_get_bynumber
+    public :: pcre2_substring_get_bynumber_
     public :: pcre2_substring_number_from_name
 
     private :: c_f_str_ptr
-    private :: c_strlen
-    private :: pcre2_substring_copy_byname_
-    private :: pcre2_substring_copy_bynumber_
-    private :: pcre2_substring_get_byname_
-    private :: pcre2_substring_get_bynumber_
 
     interface
         ! pcre2_code *pcre2_compile(PCRE2_SPTR pattern, PCRE2_SIZE length, uint32_t options, int *errorcode, PCRE2_SIZE *erroroffset, pcre2_compile_context *ccontext)
         function pcre2_compile(pattern, length, options, errorcode, erroroffset, ccontext) bind(c, name='pcre2_compile_8')
-            import :: PCRE2_SIZE, PCRE2_SPTR, c_uint32_t, c_int, c_ptr
+            import :: c_uint32_t, c_int, c_ptr, pcre2_size, pcre2_sptr
             implicit none
-            character(kind=PCRE2_SPTR), intent(in)        :: pattern
-            integer(kind=PCRE2_SIZE),   intent(in), value :: length
+            character(kind=pcre2_sptr), intent(in)        :: pattern
+            integer(kind=pcre2_size),   intent(in), value :: length
             integer(kind=c_uint32_t),   intent(in), value :: options
             integer(kind=c_int),        intent(out)       :: errorcode
-            integer(kind=PCRE2_SIZE),   intent(out)       :: erroroffset
+            integer(kind=pcre2_size),   intent(out)       :: erroroffset
             type(c_ptr),                intent(in), value :: ccontext
             type(c_ptr)                                   :: pcre2_compile
         end function pcre2_compile
 
         ! int pcre2_get_error_message(int errorcode, PCRE2_UCHAR *buffer, PCRE2_SIZE bufflen)
         function pcre2_get_error_message(errorcode, buffer, bufflen) bind(c, name='pcre2_get_error_message_8')
-            import :: c_int, PCRE2_SIZE, PCRE2_UCHAR
+            import :: c_int, pcre2_size, pcre2_uchar
             implicit none
             integer(kind=c_int),         intent(in), value :: errorcode
-            character(kind=PCRE2_UCHAR), intent(inout)     :: buffer
-            integer(kind=PCRE2_SIZE),    intent(in), value :: bufflen
+            character(kind=pcre2_uchar), intent(inout)     :: buffer
+            integer(kind=pcre2_size),    intent(in), value :: bufflen
             integer(kind=c_int)                            :: pcre2_get_error_message
         end function pcre2_get_error_message
 
@@ -364,12 +363,12 @@ module pcre2
 
         ! int pcre2_match(const pcre2_code *code, PCRE2_SPTR subject, PCRE2_SIZE length, PCRE2_SIZE startoffset, uint32_t options, pcre2_match_data *match_data, pcre2_match_context *mcontext)
         function pcre2_match(code, subject, length, startoffset, options, match_data, mcontext) bind(c, name='pcre2_match_8')
-            import :: c_int, c_ptr, c_uint32_t, PCRE2_SIZE, PCRE2_SPTR
+            import :: c_int, c_ptr, c_uint32_t, pcre2_size, pcre2_sptr
             implicit none
             type(c_ptr),                intent(in), value :: code
-            character(kind=PCRE2_SPTR), intent(in)        :: subject
-            integer(kind=PCRE2_SIZE),   intent(in), value :: length
-            integer(kind=PCRE2_SIZE),   intent(in), value :: startoffset
+            character(kind=pcre2_sptr), intent(in)        :: subject
+            integer(kind=pcre2_size),   intent(in), value :: length
+            integer(kind=pcre2_size),   intent(in), value :: startoffset
             integer(kind=c_uint32_t),   intent(in), value :: options
             type(c_ptr),                intent(in), value :: match_data
             type(c_ptr),                intent(in), value :: mcontext
@@ -387,55 +386,55 @@ module pcre2
 
         ! int pcre2_substring_copy_byname(pcre2_match_data *match_data, PCRE2_SPTR name, PCRE2_UCHAR *buffer, PCRE2_SIZE *bufflen)
         function pcre2_substring_copy_byname_(match_data, name, buffer, bufflen) bind(c, name='pcre2_substring_copy_byname_8')
-            import :: c_int, c_ptr, PCRE2_SIZE, PCRE2_SPTR, PCRE2_UCHAR
+            import :: c_int, c_ptr, pcre2_size, pcre2_sptr, pcre2_uchar
             implicit none
             type(c_ptr),                 intent(in), value :: match_data
-            character(kind=PCRE2_SPTR),  intent(in)        :: name
-            character(kind=PCRE2_UCHAR), intent(inout)     :: buffer
-            integer(kind=PCRE2_SIZE),    intent(inout)     :: bufflen
+            character(kind=pcre2_sptr),  intent(in)        :: name
+            character(kind=pcre2_uchar), intent(inout)     :: buffer
+            integer(kind=pcre2_size),    intent(inout)     :: bufflen
             integer(kind=c_int)                            :: pcre2_substring_copy_byname_
         end function pcre2_substring_copy_byname_
 
         ! int pcre2_substring_copy_bynumber(pcre2_match_data *match_data, uint32_t number, PCRE2_UCHAR *buffer, PCRE2_SIZE *bufflen)
         function pcre2_substring_copy_bynumber_(match_data, number, buffer, bufflen) bind(c, name='pcre2_substring_copy_bynumber_8')
-            import :: c_int, c_ptr, c_uint32_t, PCRE2_SIZE, PCRE2_UCHAR
+            import :: c_int, c_ptr, c_uint32_t, pcre2_size, pcre2_uchar
             implicit none
             type(c_ptr),                 intent(in), value :: match_data
             integer(kind=c_uint32_t),    intent(in), value :: number
-            character(kind=PCRE2_UCHAR), intent(inout)     :: buffer
-            integer(kind=PCRE2_SIZE),    intent(inout)     :: bufflen
+            character(kind=pcre2_uchar), intent(inout)     :: buffer
+            integer(kind=pcre2_size),    intent(inout)     :: bufflen
             integer(kind=c_int)                            :: pcre2_substring_copy_bynumber_
         end function pcre2_substring_copy_bynumber_
 
         ! int pcre2_substring_get_byname(pcre2_match_data *match_data, PCRE2_SPTR name, PCRE2_UCHAR **bufferptr, PCRE2_SIZE *bufflen)
         function pcre2_substring_get_byname_(match_data, name, bufferptr, bufflen) bind(c, name='pcre2_substring_get_byname_8')
-            import :: c_int, c_ptr, PCRE2_SIZE, PCRE2_SPTR
+            import :: c_int, c_ptr, pcre2_size, pcre2_sptr
             implicit none
             type(c_ptr),                 intent(in), value :: match_data
-            character(kind=PCRE2_SPTR),  intent(in)        :: name
+            character(kind=pcre2_sptr),  intent(in)        :: name
             type(c_ptr),                 intent(out)       :: bufferptr
-            integer(kind=PCRE2_SIZE),    intent(out)       :: bufflen
+            integer(kind=pcre2_size),    intent(out)       :: bufflen
             integer(kind=c_int)                            :: pcre2_substring_get_byname_
         end function pcre2_substring_get_byname_
 
         ! int pcre2_substring_get_bynumber(pcre2_match_data *match_data, uint32_t number, PCRE2_UCHAR **bufferptr, PCRE2_SIZE *bufflen)
         function pcre2_substring_get_bynumber_(match_data, number, bufferptr, bufflen) &
                 bind(c, name='pcre2_substring_get_bynumber_8')
-            import :: c_int, c_ptr, c_uint32_t, PCRE2_SIZE
+            import :: c_int, c_ptr, c_uint32_t, pcre2_size
             implicit none
             type(c_ptr),                 intent(in), value :: match_data
             integer(kind=c_uint32_t),    intent(in), value :: number
             type(c_ptr),                 intent(out)       :: bufferptr
-            integer(kind=PCRE2_SIZE),    intent(out)       :: bufflen
+            integer(kind=pcre2_size),    intent(out)       :: bufflen
             integer(kind=c_int)                            :: pcre2_substring_get_bynumber_
         end function pcre2_substring_get_bynumber_
 
         ! int pcre2_substring_number_from_name(const pcre2_code *code, PCRE2_SPTR name)
         function pcre2_substring_number_from_name(code, name) bind(c, name='pcre2_substring_number_from_name_8')
-            import :: c_int, c_ptr, PCRE2_SPTR
+            import :: c_int, c_ptr, pcre2_sptr
             implicit none
             type(c_ptr),                intent(in), value :: code
-            character(kind=PCRE2_SPTR), intent(in)        :: name
+            character(kind=pcre2_sptr), intent(in)        :: name
             integer(kind=c_int)                           :: pcre2_substring_number_from_name
         end function pcre2_substring_number_from_name
 
@@ -468,28 +467,19 @@ module pcre2
         end subroutine pcre2_substring_free
     end interface
 
-    interface
-        ! size_t strlen(const char *str)
-        function c_strlen(str) bind(c, name='strlen')
-            import :: c_ptr, c_size_t
-            implicit none
-            type(c_ptr), intent(in), value :: str
-            integer(kind=c_size_t)         :: c_strlen
-        end function c_strlen
-    end interface
 contains
     function pcre2_substring_copy_byname(match_data, name, buffer, buff_len) result(rc)
         type(c_ptr),              intent(in)              :: match_data
         character(len=*),         intent(in)              :: name
         character(len=*),         intent(inout)           :: buffer
-        integer(kind=PCRE2_SIZE), intent(inout), optional :: buff_len
+        integer(kind=pcre2_size), intent(inout), optional :: buff_len
         integer                                           :: rc
-        integer(kind=PCRE2_SIZE)                          :: sz
+        integer(kind=pcre2_size)                          :: sz
 
         if (present(buff_len)) then
             sz = buff_len
         else
-            sz = len(buffer, kind=PCRE2_SIZE)
+            sz = len(buffer, kind=pcre2_size)
         end if
 
         rc = pcre2_substring_copy_byname_(match_data, name // c_null_char, buffer, sz)
@@ -500,14 +490,14 @@ contains
         type(c_ptr),              intent(in)              :: match_data
         integer,                  intent(in)              :: number
         character(len=*),         intent(inout)           :: buffer
-        integer(kind=PCRE2_SIZE), intent(inout), optional :: buff_len
+        integer(kind=pcre2_size), intent(inout), optional :: buff_len
         integer                                           :: rc
-        integer(kind=PCRE2_SIZE)                          :: sz
+        integer(kind=pcre2_size)                          :: sz
 
         if (present(buff_len)) then
             sz = buff_len
         else
-            sz = len(buffer, kind=PCRE2_SIZE)
+            sz = len(buffer, kind=pcre2_size)
         end if
 
         rc = pcre2_substring_copy_bynumber_(match_data, number, buffer, sz)
@@ -518,34 +508,30 @@ contains
         type(c_ptr),                   intent(in)  :: match_data
         character(len=*),              intent(in)  :: name
         character(len=:), allocatable, intent(out) :: buffer
-        integer(kind=PCRE2_SIZE),      intent(out) :: buff_len
-        integer                                    :: rc
-        type(c_ptr)                                :: ptr
+        integer(kind=pcre2_size),      intent(out) :: buff_len
+
+        integer     :: rc
+        type(c_ptr) :: ptr
 
         ptr = c_null_ptr
         rc = pcre2_substring_get_byname_(match_data, name // c_null_char, ptr, buff_len)
-
-        if (c_associated(ptr)) then
-            call c_f_str_ptr(ptr, buffer)
-            call pcre2_substring_free(ptr)
-        end if
+        call c_f_str_ptr(ptr, buffer)
+        if (c_associated(ptr)) call pcre2_substring_free(ptr)
     end function pcre2_substring_get_byname
 
     function pcre2_substring_get_bynumber(match_data, number, buffer, buff_len) result(rc)
         type(c_ptr),                   intent(in)  :: match_data
         integer,                       intent(in)  :: number
         character(len=:), allocatable, intent(out) :: buffer
-        integer(kind=PCRE2_SIZE),      intent(out) :: buff_len
-        integer                                    :: rc
-        type(c_ptr)                                :: ptr
+        integer(kind=pcre2_size),      intent(out) :: buff_len
+
+        integer     :: rc
+        type(c_ptr) :: ptr
 
         ptr = c_null_ptr
         rc = pcre2_substring_get_bynumber_(match_data, number, ptr, buff_len)
-
-        if (c_associated(ptr)) then
-            call c_f_str_ptr(ptr, buffer)
-            call pcre2_substring_free(ptr)
-        end if
+        call c_f_str_ptr(ptr, buffer)
+        if (c_associated(ptr)) call pcre2_substring_free(ptr)
     end function pcre2_substring_get_bynumber
 
     subroutine c_f_str_ptr(c_str, f_str)
@@ -555,6 +541,16 @@ contains
 
         character(kind=c_char), pointer :: ptrs(:)
         integer(kind=c_size_t)          :: i, sz
+
+        interface
+            ! size_t strlen(const char *str)
+            function c_strlen(str) bind(c, name='strlen')
+                import :: c_ptr, c_size_t
+                implicit none
+                type(c_ptr), intent(in), value :: str
+                integer(kind=c_size_t)         :: c_strlen
+            end function c_strlen
+        end interface
 
         copy_block: block
             if (.not. c_associated(c_str)) exit copy_block
