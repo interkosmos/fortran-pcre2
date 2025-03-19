@@ -21,8 +21,8 @@ TEST    = test_pcre2
 
 all: $(TARGET)
 
-$(TARGET): src/pcre2.f90
-	$(FC) $(FFLAGS) -c src/pcre2.f90
+$(TARGET): src/pcre2.F90
+	$(FC) $(FFLAGS) -c src/pcre2.F90
 	$(AR) $(ARFLAGS) $(TARGET) pcre2.o
 
 install: $(TARGET)
@@ -41,4 +41,3 @@ clean:
 	if [ `ls -1 *.o 2>/dev/null | wc -l` -gt 0 ]; then rm *.o; fi
 	if [ -e $(TARGET) ]; then rm $(TARGET); fi
 	if [ -e $(TEST) ]; then rm $(TEST); fi
-

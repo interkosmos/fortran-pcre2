@@ -1,4 +1,4 @@
-! pcre2.f90
+! pcre2.F90
 !
 ! A collection of ISO_C_BINDING interfaces to PCRE2 for Fortran 2018.
 !
@@ -10,7 +10,16 @@ module pcre2
     implicit none (type, external)
     private
 
-    integer,                  parameter, public :: c_uint32_t            = c_int32_t
+#if defined (__flang__)
+
+    public :: c_uint32_t
+
+#else
+
+    integer, parameter, public :: c_uint32_t = c_int32_t
+
+#endif
+
     integer,                  parameter, public :: pcre2_uchar           = c_char
     integer,                  parameter, public :: pcre2_sptr            = c_char
     integer,                  parameter, public :: pcre2_size            = c_size_t
